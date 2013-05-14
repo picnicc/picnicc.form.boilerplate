@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <title>picnicc - form boilerplate</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="A picnicc form boilerplate">
+        <meta name="author" content="Alex Duloz - http://bitspushedaround.com">
+        <link href="css/main.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        
+        <!-- The markup for our "sliding alert" -->
+        <div class="noty-container">
+            <p class="noty-inner"></p>
+        </div>
+        
+        <div class="container">
+
+            <h1>Picnicc: form boilerplate</h1>
+            
+            <p>
+                This form uses <a href="https://github.com/picnicc/picnicc.js" title="picnicc.js on Github">picnicc.js</a>, <a href="" title="noty.js homepage">noty.js</a> and <a href="http://fgnass.github.io/spin.js/" title="spin.js homepage">spin.js</a> to provide your users with a pleasant experience. The fine point of this boilerplate is that everything will also work just fine if JS is disabled.
+            </p>
+
+            <form name="picnicc" action="http://picni.cc/api/v1/build/" method="post">
+
+                <!-- Things to edit -->
+                <input type="hidden" name="username" value="picnicc"> 
+                <input type="hidden" name="project" value="myAwesomeFramework.css">
+                <input type="hidden" name="picnicc" value="https://raw.github.com/picnicc/myAwesomeFramework/gh-pages/picnicc.json">
+                <!-- / Things to edit -->
+
+                <input type="hidden" name="if_success" value="302">
+                <input type="hidden" name="if_error" value="_picnicc">
+                
+                <!-- Optional parameters (could be checkboxes, too): uncomment to enable (we're just minifying CSS here) -->
+                <!--<input type="hidden" name="parse" value="less-to-css">-->
+                <!--<input type="hidden" name="parse" value="sass-to-css">-->
+                <input type="hidden" name="minify" value="css">
+                <!--<input type="hidden" name="minify" value="js">-->
+                <!-- / Optional parameters -->
+
+                <h2>Pick what you need</h2>
+                
+                <!-- Edit the bits below to match your project's -->
+                <label>
+                    <input type="checkbox" name="bits[]" value="{picnicc:section-1}">
+                    Add <code>section-1</code> to your build
+                </label>
+                <label>
+                    <input type="checkbox" name="bits[]" value="{picnicc:section-2}">
+                    Add <code>section-2</code> to your build
+                </label>
+                <label>
+                    <input type="checkbox" name="bits[]" value="{picnicc:section-3}">
+                    Add <code>section-3</code> to your build
+                </label>
+                <!-- / Bits -->
+
+                <button>Build it!<span class="spin" id="build-spin"></span></button>
+
+                <!-- Display only if js is enabled -->
+                <div id="retrieve-build" style="display:none">
+                    <h2>Retrieve what you used</h2>
+                    <label>
+                        <input type="text" name="picnicc_build_id" value="">
+                        Retrieve your cutomizations
+                    </label>
+                    <button id="picnicc_retrieve_build">Retrieve!<span class="spin" id="retrieve-spin"></span></button>
+                </div>
+            </form>
+        </div>
+
+        <script src="/jquery.min.js"></script>
+        <script src="/noty.min.js"></script>
+        <script src="/spin.min.js"></script>
+        <script src="/picnicc.min.js"></script>
+        <script>
+            
+            // The "retrieve" part isn't displayed if js is disabled
+            document.getElementById("retrieve-build").setAttribute("style","display:inherit");
+            
+            // Init spinner
+            var spinner = new Spinner();
+
+            picnicc.form.whenTransmit()
+            .begins(function(){
+                spinner.spin(document.getElementById("build-spin"));
+            })
+            .done(function(response){
+                window.location.href = response.location;
+            })
+            .fail(function(error){
+                noty.content("An error occured: " + error.message).slide();
+            })
+            .ends(function(){
+                spinner.stop();
+            });
+
+            picnicc.form.whenRetrieve()
+            .begins(function(){
+                spinner.spin(document.getElementById("retrieve-spin"));
+            })
+            .done(function(response) {
+                noty.content("Here are the boxes you checked last time (project was " + response.version + ")").slide();
+                picnicc.form.checkboxify(response.bits);
+
+            })
+            .fail(function(error) {
+                noty.content("An error occured: " + error.message).slide();
+            })
+            .ends(function(){
+                spinner.stop();
+            });
+        </script>
+    </body>
+</html>
