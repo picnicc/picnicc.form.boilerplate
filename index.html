@@ -73,10 +73,11 @@
         </div>
         
         <!-- Change paths -->
-        <script src="http://picnicc.github.io/picnicc.form.boilerplate/jquery.min.js"></script>
-        <script src="http://picnicc.github.io/picnicc.form.boilerplate/noty.min.js"></script>
-        <script src="http://picnicc.github.io/picnicc.form.boilerplate/spin.min.js"></script>
-        <script src="http://picnicc.github.io/picnicc.form.boilerplate/picnicc.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script src="https://raw.github.com/alexduloz/noty.js/gh-pages/noty.js"></script>
+        <script src="http://fgnass.github.io/spin.js/dist/spin.min.js"></script>
+        <!--<script src="picnicc.js"></script>-->
+        <script src="https://raw.github.com/picnicc/picnicc.js/gh-pages/picnicc.min.js"></script>
         <!-- / Change paths -->
 
         <!-- Edit what follows as you see fit! -->
@@ -108,8 +109,7 @@
             })
             .done(function(response) {
                 noty.content("Here are the boxes you checked last time (project was " + response.version + ")").slide();
-                picnicc.form.checkboxify(response.bits);
-
+                picnicc.form.checkboxify("bits",response.bits);
             })
             .fail(function(error) {
                 noty.content("An error occured: " + error.message).slide();
